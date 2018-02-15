@@ -7,20 +7,23 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Host;
 using System.Linq;
+using Microsoft.AspNetCore.SignalR.Client;
+using System.Threading.Tasks;
 
 namespace HttpTriggerCore
 {
     public class HttpTrigger
     {
-        public static IActionResult Run(HttpRequest req, TraceWriter log)
+        public static async Task Run(string input, TraceWriter log)
         {
-            log.Info("C# HTTP trigger function processed a request.");
+            log.Info($"C# function executed: {input}");
+            var connection = new HubConnectionBuilder()
+                .WithUrl("https://sidneywebapptest.azurewebsites.net/chat")
+                .Build();
+                
+            await connection.StartAsync();
 
-            if (req.Query.TryGetValue("name", out StringValues value)) {
-                return new OkObjectResult($"Hello, {value.First()}");
-            }
-
-            return new BadRequestObjectResult("Please pass a name on the query string or in the request body");
+            await connection.InvokeAsync<object>("send", input);
         }
     }
 }

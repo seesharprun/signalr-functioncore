@@ -1,12 +1,9 @@
 ﻿{
   "bindings": [
     {
-      "type": "httpTrigger",
-      "methods": [
-        "GET"
-      ],
-      "authLevel": "anonymous",
-      "name": "req"
+      "type": "manualTrigger",
+      "direction": "in",
+      "name": "input"
     }
   ],
   "scriptFile": "../HttpTriggerCore.dll",
